@@ -46,6 +46,7 @@
             android:layout_marginTop="16dp"
             android:maxLines="1"
             android:hint="Возраст"
+            android:inputType="number"
             />
 
     <TextView
@@ -101,7 +102,8 @@
                 android:id="@+id/maleGender"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Мужчина"/>
+                android:text="Мужчина"
+                android:checked="true"/>
 
         <RadioButton
                 android:id="@+id/femaleGender"

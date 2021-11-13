@@ -1,0 +1,8 @@
+{
+  "Person": {
+    "name": "testName",
+    "surname": "testSurname",
+    "age": "age",
+    "isMale": false
+  }
+}

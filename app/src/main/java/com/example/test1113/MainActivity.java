@@ -3,22 +3,25 @@ package com.example.test1113;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
-    EditText editText;
+    EditText editTextName;
+    EditText editTextSurname;
+    EditText editTextAge;
     Button button;
-    String savedText;
+    Person savedPerson;
+    RadioGroup radioGroup;
 
-    String savedTextKey = "saved_text";
+    String savedPersonKey = "saved_person";
 
     SharedPreferences sharedPreferences;
 
@@ -28,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textView = findViewById(R.id.textView);
-        editText = findViewById(R.id.editText);
+        editTextName = findViewById(R.id.editTextName);
+        editTextSurname = findViewById(R.id.editTextSurname);
+        editTextAge = findViewById(R.id.editTextAge);
         button = findViewById(R.id.button);
+        radioGroup = findViewById(R.id.radioGroup);
 
         sharedPreferences = getPreferences(Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -39,8 +45,18 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                savedText = editText.getText().toString();
-                editor.putString(savedTextKey, savedText);
+                String name = editTextName.getText().toString();
+                String surname = editTextSurname.getText().toString();
+                String age = editTextAge.getText().toString();
+                boolean isMale = true;
+                if (radioGroup.getCheckedRadioButtonId() == R.id.femaleGender)
+                    isMale = false;
+
+                savedPerson = new Person(name, surname, age, isMale);
+
+
+
+                editor.putString(savedPersonKey, savedPerson);
                 editor.apply();
                 textView.setText(getSavedTextFromCache());
             }
@@ -48,6 +64,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getSavedTextFromCache() {
-        return sharedPreferences.getString(savedTextKey, "");
+        return sharedPreferences.getString(savedPersonKey, "");
     }
 }
