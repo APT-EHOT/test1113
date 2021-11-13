@@ -11,6 +11,11 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView textView;
@@ -40,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getPreferences(Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        textView.setText(getSavedTextFromCache());
+        fillTextView(getSavedPersonFromCache());
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,16 +59,42 @@ public class MainActivity extends AppCompatActivity {
 
                 savedPerson = new Person(name, surname, age, isMale);
 
-
-
-                editor.putString(savedPersonKey, savedPerson);
+                Gson gson = new Gson();
+                String gsonPerson = gson.toJson(savedPerson);
+                editor.putString(savedPersonKey, gsonPerson);
                 editor.apply();
-                textView.setText(getSavedTextFromCache());
+                fillTextView(getSavedPersonFromCache());
             }
         });
     }
 
-    private String getSavedTextFromCache() {
-        return sharedPreferences.getString(savedPersonKey, "");
+    private Person getPersonFromJson(String json) {
+        if (json.equals(""))
+            return null;
+        Gson gson = new Gson();
+        Type type = new TypeToken<Person>(){}.getType();
+        return gson.fromJson(json, type);
+    }
+
+    private Person getSavedPersonFromCache() {
+        String jsonPerson = sharedPreferences.getString(savedPersonKey, "");
+        return getPersonFromJson(jsonPerson);
+    }
+
+    private void fillTextView(Person person) {
+
+        if (person == null)
+            return;
+
+        String gender = "женский";
+        if (person.isMale)
+            gender = "мужской";
+
+        String textToFill = "Имя: " + person.name + "\n" +
+            "Фамилия: " + person.surname + "\n" +
+            "Возраст: " + person.age + "\n" +
+            "Пол: " + gender;
+
+        textView.setText(textToFill);
     }
 }
